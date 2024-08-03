@@ -17,6 +17,7 @@ dependencies:
   http: ^1.2.2
   shared_preferences:
   fluttertoast:
+  lottie:
 
 dev_dependencies:
   flutter_test:

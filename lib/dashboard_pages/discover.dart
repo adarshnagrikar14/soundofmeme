@@ -1,9 +1,14 @@
+// ignore_for_file: unused_field
+
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soundofmeme/models/all_song_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:soundofmeme/reusables/like_animation.dart';
 
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({super.key});
@@ -25,11 +30,28 @@ class _DiscoverPageState extends State<DiscoverPage> {
   final List<Song> _songs = [];
   int _currentPage = 1;
   bool _isLoading = false;
+  String? _accessToken = "";
+
+  List<String> _likedSongs = [];
 
   @override
   void initState() {
     super.initState();
+    _checkToken();
     _fetchSongs();
+    _loadLikedSongs();
+  }
+
+  Future<void> _checkToken() async {
+    final token = await getToken();
+    setState(() {
+      _accessToken = token.toString();
+    });
+  }
+
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('access_token');
   }
 
   Future<void> _fetchSongs() async {
@@ -250,10 +272,29 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                   ),
                                   child: Row(
                                     children: [
-                                      const Icon(
-                                        LineIcons.heart,
-                                        color: Colors.white60,
-                                        size: 20.0,
+                                      GestureDetector(
+                                        onTap: () async {
+                                          if (_likedSongs
+                                              .contains("${song.songId}")) {
+                                            await _dislikeSong(
+                                                "${song.songId}");
+                                          } else {
+                                            LottiePopupManager().showPopup(
+                                                context,
+                                                'assets/gifs/like.json');
+                                            await _likeSong("${song.songId}");
+                                          }
+                                        },
+                                        child: Icon(
+                                          _likedSongs.contains("${song.songId}")
+                                              ? LineIcons.heartAlt
+                                              : LineIcons.heart,
+                                          color: _likedSongs
+                                                  .contains("${song.songId}")
+                                              ? Colors.red
+                                              : Colors.white60,
+                                          size: 20.0,
+                                        ),
                                       ),
                                       const SizedBox(
                                         width: 8.0,
@@ -285,6 +326,64 @@ class _DiscoverPageState extends State<DiscoverPage> {
         ),
       ),
     );
+  }
+
+  Future<void> _likeSong(String songId) async {
+    final response = await http.post(
+      Uri.parse('http://18.204.16.28:80/like'),
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'song_id': songId}),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _likedSongs.add(songId);
+      });
+      _saveLikedSongs();
+      Fluttertoast.showToast(
+        msg: "Sound Liked.",
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: blueColor,
+      );
+      LottiePopupManager().hidePopup();
+    } else {
+      throw Exception('Failed to like song');
+    }
+  }
+
+  Future<void> _dislikeSong(String songId) async {
+    final response = await http.post(
+      Uri.parse('http://18.204.16.28:80/dislike'),
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: json.encode({'song_id': songId}),
+    );
+
+    if (response.statusCode == 200) {
+      setState(() {
+        _likedSongs.remove(songId);
+      });
+      _saveLikedSongs();
+    } else {
+      throw Exception('Failed to dislike song');
+    }
+  }
+
+  Future<void> _saveLikedSongs() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.setStringList('liked_songs', _likedSongs).whenComplete(() {});
+  }
+
+  Future<void> _loadLikedSongs() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _likedSongs = prefs.getStringList('liked_songs') ?? [];
+    });
   }
 }
 

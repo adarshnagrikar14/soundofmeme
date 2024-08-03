@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:soundofmeme/dashboard_pages/account.dart';
 import 'package:soundofmeme/dashboard_pages/discover.dart';
+import 'package:soundofmeme/dashboard_pages/liked_page.dart';
 
 class MainDashboard extends StatefulWidget {
   const MainDashboard({super.key});
@@ -45,8 +47,8 @@ class _MainDashboardState extends State<MainDashboard> {
     final List<Widget> widgetOptions = <Widget>[
       const DiscoverPage(),
       const Scaffold(),
-      const Scaffold(),
-      const Scaffold(),
+      const LikedSongsPage(),
+      const ProfilePage(),
     ];
 
     return WillPopScope(

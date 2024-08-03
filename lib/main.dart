@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
           surface: Colors.white,
           onPrimary: Colors.white,
         ),
-        textTheme: GoogleFonts.rubikTextTheme(
+        textTheme: GoogleFonts.pottaOneTextTheme(
           Theme.of(context).textTheme,
         ),
         visualDensity: VisualDensity.adaptivePlatformDensity,

@@ -46,6 +46,7 @@ class _MainDashboardState extends State<MainDashboard> {
       const DiscoverPage(),
       const Scaffold(),
       const Scaffold(),
+      const Scaffold(),
     ];
 
     return WillPopScope(
@@ -58,23 +59,27 @@ class _MainDashboardState extends State<MainDashboard> {
             tabBorderRadius: 12,
             backgroundColor: blueColorBottom,
             tabActiveBorder: Border.all(color: Colors.white, width: 1),
-            gap: 8,
+            gap: 10,
             color: Colors.white54,
             activeColor: Colors.white,
             iconSize: 25,
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            mainAxisAlignment: MainAxisAlignment.center,
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
             tabs: const [
               GButton(
-                icon: LineIcons.home,
+                icon: Icons.home_filled,
                 text: 'Discover',
               ),
               GButton(
                 icon: Icons.music_note_outlined,
-                text: 'My Creations',
+                text: 'Creations',
               ),
               GButton(
                 icon: LineIcons.heart,
+                text: 'Liked',
+              ),
+              GButton(
+                icon: LineIcons.user,
                 text: 'Account',
               ),
             ],

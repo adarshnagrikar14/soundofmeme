@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:line_icons/line_icons.dart';
 import 'package:soundofmeme/models/all_song_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -15,6 +16,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
   Color blueColor = const Color.fromARGB(255, 15, 23, 42);
   int? selectedIndex = 0;
   List<String> list = [
+    'All',
     'Trending',
     'Recently Added',
     'Premium',
@@ -167,72 +169,182 @@ class _DiscoverPageState extends State<DiscoverPage> {
                 ),
               ),
             ),
-            SliverGrid(
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 0.8,
-                // crossAxisSpacing: 6.0,
-                mainAxisSpacing: 10.0,
-              ),
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  if (index >= _songs.length) {
-                    return _isLoading
-                        ? const Center(
-                            child: CircularProgressIndicator(
-                              color: Colors.white24,
-                            ),
-                          )
-                        : const SizedBox();
-                  }
-
-                  final song = _songs[index];
-                  return Padding(
-                    padding: EdgeInsets.only(
-                      left: index % 2 == 0 ? 8.0 : 1.0,
-                      right: index % 2 == 0 ? 1.0 : 8.0,
+            _isLoading
+                ? const SliverToBoxAdapter(
+                    child: Opacity(
+                      opacity: 0.6,
+                      child: LoadingWidget(),
                     ),
-                    child: Card(
-                      color: Colors.white24,
-                      elevation: 1.0,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Opacity(
-                              opacity: 1,
-                              child: Image.network(
-                                song.imageUrl,
-                                width: double.infinity,
-                                fit: BoxFit.fill,
-                                color: Colors.black12,
-                                colorBlendMode: BlendMode.multiply,
-                              ),
+                  )
+                : SliverGrid(
+                    gridDelegate:
+                        const SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.6,
+                      // crossAxisSpacing: 6.0,
+                      mainAxisSpacing: 10.0,
+                    ),
+                    delegate: SliverChildBuilderDelegate(
+                      (context, index) {
+                        final song = _songs[index];
+                        return Padding(
+                          padding: EdgeInsets.only(
+                            left: index % 2 == 0 ? 8.0 : 1.0,
+                            right: index % 2 == 0 ? 1.0 : 8.0,
+                          ),
+                          child: Card(
+                            color: const Color.fromARGB(255, 26, 39, 70),
+                            elevation: 5.0,
+                            shadowColor: Colors.grey.shade800,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Expanded(
+                                  child: Opacity(
+                                    opacity: 0.9,
+                                    child: Image.network(
+                                      song.imageUrl,
+                                      width: double.infinity,
+                                      fit: BoxFit.fill,
+                                      color: Colors.black12,
+                                      colorBlendMode: BlendMode.multiply,
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 8.0,
+                                    top: 10.0,
+                                  ),
+                                  child: Text(
+                                    song.songName,
+                                    style: const TextStyle(color: Colors.white),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 8.0,
+                                    top: 5.0,
+                                    bottom: 8.0,
+                                  ),
+                                  child: Text(
+                                    song.tags[0],
+                                    style: const TextStyle(
+                                      color: Colors.white60,
+                                      fontSize: 12.0,
+                                    ),
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                  ),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                    left: 8.0,
+                                    top: 5.0,
+                                    bottom: 8.0,
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Icon(
+                                        LineIcons.heart,
+                                        color: Colors.white60,
+                                        size: 20.0,
+                                      ),
+                                      const SizedBox(
+                                        width: 8.0,
+                                      ),
+                                      Text(
+                                        "${song.likes}",
+                                        style: const TextStyle(
+                                          color: Colors.white60,
+                                          fontSize: 12.0,
+                                        ),
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
                           ),
-                          Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              song.songName,
-                              style: const TextStyle(color: Colors.white),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
+                        );
+                      },
+                      childCount: _songs.length,
                     ),
-                  );
-                },
-                childCount: _songs.length,
+                  ),
+            const SliverToBoxAdapter(
+              child: SizedBox(
+                height: 50.0,
               ),
             ),
           ],
         ),
       ),
     );
+  }
+}
+
+class LoadingWidget extends StatefulWidget {
+  const LoadingWidget({super.key});
+
+  @override
+  State<LoadingWidget> createState() => _LoadingWidgetState();
+}
+
+class _LoadingWidgetState extends State<LoadingWidget>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _animation;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      duration: const Duration(milliseconds: 500),
+      vsync: this,
+    )..repeat(reverse: true);
+
+    _animation = Tween<double>(begin: 0, end: 20).animate(_controller);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          AnimatedBuilder(
+            animation: _animation,
+            builder: (context, child) {
+              return Padding(
+                padding: EdgeInsets.only(top: _animation.value),
+                child: child,
+              );
+            },
+            child: Image.asset(
+              "assets/images/wait.png",
+              width: MediaQuery.of(context).size.width * 0.5,
+            ),
+          ),
+          const SizedBox(height: 10.0),
+          const Text(
+            "Loading Sounds for you...",
+            style: TextStyle(
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

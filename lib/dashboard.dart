@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:soundofmeme/dashboard_pages/account.dart';
+import 'package:soundofmeme/dashboard_pages/creations.dart';
 import 'package:soundofmeme/dashboard_pages/discover.dart';
 import 'package:soundofmeme/dashboard_pages/liked_page.dart';
 
@@ -46,7 +47,7 @@ class _MainDashboardState extends State<MainDashboard> {
   Widget build(BuildContext context) {
     final List<Widget> widgetOptions = <Widget>[
       const DiscoverPage(),
-      const Scaffold(),
+      const CreationsPage(),
       const LikedSongsPage(),
       const ProfilePage(),
     ];

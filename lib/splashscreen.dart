@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:soundofmeme/dashboard.dart';
 import 'package:soundofmeme/login.dart';
 
@@ -13,6 +14,8 @@ class Splashscreen extends StatefulWidget {
 }
 
 class _SplashscreenState extends State<Splashscreen> {
+  double _imageHeight = 50.0;
+
   @override
   void initState() {
     super.initState();
@@ -21,12 +24,17 @@ class _SplashscreenState extends State<Splashscreen> {
       const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarColor: Colors.white70,
+        systemNavigationBarColor: Colors.white,
         systemNavigationBarIconBrightness: Brightness.light,
       ),
     );
 
     _checkToken();
+    Future.delayed(const Duration(milliseconds: 600), () {
+      setState(() {
+        _imageHeight = 300.0;
+      });
+    });
   }
 
   Future<void> _checkToken() async {
@@ -62,32 +70,33 @@ class _SplashscreenState extends State<Splashscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color.fromARGB(255, 15, 23, 42),
-      body: Opacity(
-        opacity: 0.8,
-        child: Stack(
-          alignment: Alignment.bottomCenter,
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 55.0, bottom: 60),
-              child: Positioned.fill(
-                child: Image.asset(
-                  "assets/gifs/w1.gif",
-                ),
+      body: Column(
+        children: [
+          const Spacer(),
+          Align(
+            alignment: Alignment.center,
+            child: AnimatedContainer(
+              duration: const Duration(seconds: 1),
+              curve: Curves.easeInOut,
+              height: _imageHeight,
+              child: Image.asset(
+                "assets/images/w1.png",
+                errorBuilder: (context, error, stackTrace) {
+                  Fluttertoast.showToast(msg: "$error");
+                  return const SizedBox.shrink();
+                },
               ),
             ),
-            Container(
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
               color: Colors.white,
               width: MediaQuery.of(context).size.width,
               height: 50,
             ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                "assets/images/w2.png",
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

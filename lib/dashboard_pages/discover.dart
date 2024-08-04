@@ -9,6 +9,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soundofmeme/models/all_song_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:soundofmeme/reusables/like_animation.dart';
+import 'package:soundofmeme/reusables/playsong.dart';
 
 class DiscoverPage extends StatefulWidget {
   const DiscoverPage({super.key});
@@ -201,113 +202,124 @@ class _DiscoverPageState extends State<DiscoverPage> {
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
                       childAspectRatio: 0.6,
-                      // crossAxisSpacing: 6.0,
                       mainAxisSpacing: 10.0,
                     ),
                     delegate: SliverChildBuilderDelegate(
                       (context, index) {
                         final song = _songs[index];
-                        return Padding(
-                          padding: EdgeInsets.only(
-                            left: index % 2 == 0 ? 8.0 : 1.0,
-                            right: index % 2 == 0 ? 1.0 : 8.0,
-                          ),
-                          child: Card(
-                            color: const Color.fromARGB(255, 26, 39, 70),
-                            elevation: 5.0,
-                            shadowColor: Colors.grey.shade800,
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(12.0),
+                        return GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlaySongPage(song: song),
+                              ),
+                            );
+                          },
+                          child: Padding(
+                            padding: EdgeInsets.only(
+                              left: index % 2 == 0 ? 8.0 : 1.0,
+                              right: index % 2 == 0 ? 1.0 : 8.0,
                             ),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Expanded(
-                                  child: Opacity(
-                                    opacity: 0.9,
-                                    child: Image.network(
-                                      song.imageUrl,
-                                      width: double.infinity,
-                                      fit: BoxFit.fill,
-                                      color: Colors.black12,
-                                      colorBlendMode: BlendMode.multiply,
+                            child: Card(
+                              color: const Color.fromARGB(255, 26, 39, 70),
+                              elevation: 5.0,
+                              shadowColor: Colors.grey.shade800,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Opacity(
+                                      opacity: 0.9,
+                                      child: Image.network(
+                                        song.imageUrl,
+                                        width: double.infinity,
+                                        fit: BoxFit.fill,
+                                        color: Colors.black12,
+                                        colorBlendMode: BlendMode.multiply,
+                                      ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 8.0,
-                                    top: 10.0,
-                                  ),
-                                  child: Text(
-                                    song.songName,
-                                    style: const TextStyle(color: Colors.white),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 8.0,
-                                    top: 5.0,
-                                    bottom: 8.0,
-                                  ),
-                                  child: Text(
-                                    song.tags[0],
-                                    style: const TextStyle(
-                                      color: Colors.white60,
-                                      fontSize: 12.0,
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 8.0,
+                                      top: 10.0,
                                     ),
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
+                                    child: Text(
+                                      song.songName,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    left: 8.0,
-                                    top: 5.0,
-                                    bottom: 8.0,
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      GestureDetector(
-                                        onTap: () async {
-                                          if (_likedSongs
-                                              .contains("${song.songId}")) {
-                                            await _dislikeSong(
-                                                "${song.songId}");
-                                          } else {
-                                            LottiePopupManager().showPopup(
-                                                context,
-                                                'assets/gifs/like.json');
-                                            await _likeSong("${song.songId}");
-                                          }
-                                        },
-                                        child: Icon(
-                                          _likedSongs.contains("${song.songId}")
-                                              ? LineIcons.heartAlt
-                                              : LineIcons.heart,
-                                          color: _likedSongs
-                                                  .contains("${song.songId}")
-                                              ? Colors.red
-                                              : Colors.white60,
-                                          size: 20.0,
-                                        ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 8.0,
+                                      top: 5.0,
+                                      bottom: 8.0,
+                                    ),
+                                    child: Text(
+                                      song.tags[0],
+                                      style: const TextStyle(
+                                        color: Colors.white60,
+                                        fontSize: 12.0,
                                       ),
-                                      const SizedBox(
-                                        width: 8.0,
-                                      ),
-                                      Text(
-                                        "${song.likes}",
-                                        style: const TextStyle(
-                                          color: Colors.white60,
-                                          fontSize: 12.0,
-                                        ),
-                                      )
-                                    ],
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 8.0,
+                                      top: 5.0,
+                                      bottom: 8.0,
+                                    ),
+                                    child: Row(
+                                      children: [
+                                        GestureDetector(
+                                          onTap: () async {
+                                            if (_likedSongs
+                                                .contains("${song.songId}")) {
+                                              await _dislikeSong(
+                                                  "${song.songId}");
+                                            } else {
+                                              LottiePopupManager().showPopup(
+                                                  context,
+                                                  'assets/gifs/like.json');
+                                              await _likeSong("${song.songId}");
+                                            }
+                                          },
+                                          child: Icon(
+                                            _likedSongs
+                                                    .contains("${song.songId}")
+                                                ? LineIcons.heartAlt
+                                                : LineIcons.heart,
+                                            color: _likedSongs
+                                                    .contains("${song.songId}")
+                                                ? Colors.red
+                                                : Colors.white60,
+                                            size: 20.0,
+                                          ),
+                                        ),
+                                        const SizedBox(
+                                          width: 8.0,
+                                        ),
+                                        Text(
+                                          "${song.likes}",
+                                          style: const TextStyle(
+                                            color: Colors.white60,
+                                            fontSize: 12.0,
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         );

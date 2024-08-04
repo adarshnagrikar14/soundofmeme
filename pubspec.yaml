@@ -18,6 +18,7 @@ dependencies:
   shared_preferences:
   fluttertoast:
   lottie:
+  audioplayers:
 
 dev_dependencies:
   flutter_test:

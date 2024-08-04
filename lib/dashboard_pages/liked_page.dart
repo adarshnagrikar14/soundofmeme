@@ -9,6 +9,7 @@ import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:soundofmeme/models/all_song_model.dart';
 import 'package:http/http.dart' as http;
+import 'package:soundofmeme/reusables/playsong.dart';
 
 class LikedSongsPage extends StatefulWidget {
   const LikedSongsPage({super.key});
@@ -146,89 +147,101 @@ class _LikedSongsPageState extends State<LikedSongsPage> {
                       itemCount: _likedSongs.length,
                       itemBuilder: (context, index) {
                         final song = _likedSongs[index];
-                        return Card(
-                          margin: const EdgeInsets.symmetric(vertical: 8.0),
-                          color: Colors.white12,
-                          elevation: 2.0,
-                          child: Padding(
-                            padding: const EdgeInsets.all(10.0),
-                            child: Row(
-                              children: [
-                                ClipRRect(
-                                  borderRadius: BorderRadius.circular(8.0),
-                                  child: Image.network(
-                                    song.imageUrl,
-                                    width: 80.0,
-                                    height: 80.0,
-                                    fit: BoxFit.cover,
+                        return GestureDetector(
+                          onTap: () {
+                            print(song.songUrl);
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PlaySongPage(song: song),
+                              ),
+                            );
+                          },
+                          child: Card(
+                            margin: const EdgeInsets.symmetric(vertical: 8.0),
+                            color: Colors.white12,
+                            elevation: 2.0,
+                            child: Padding(
+                              padding: const EdgeInsets.all(10.0),
+                              child: Row(
+                                children: [
+                                  ClipRRect(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    child: Image.network(
+                                      song.imageUrl,
+                                      width: 80.0,
+                                      height: 80.0,
+                                      fit: BoxFit.cover,
+                                    ),
                                   ),
-                                ),
-                                const SizedBox(width: 12.0),
-                                Expanded(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        song.songName,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
+                                  const SizedBox(width: 12.0),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          song.songName,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 16.0,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      const SizedBox(height: 4.0),
-                                      Text(
-                                        song.tags.isNotEmpty
-                                            ? song.tags[0]
-                                            : '',
-                                        style: const TextStyle(
-                                          color: Colors.white60,
-                                          fontSize: 12.0,
+                                        const SizedBox(height: 4.0),
+                                        Text(
+                                          song.tags.isNotEmpty
+                                              ? song.tags[0]
+                                              : '',
+                                          style: const TextStyle(
+                                            color: Colors.white60,
+                                            fontSize: 12.0,
+                                          ),
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        maxLines: 1,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 12.0,
-                                          bottom: 8.0,
-                                        ),
-                                        child: Row(
-                                          children: [
-                                            GestureDetector(
-                                              onTap: () {
-                                                Fluttertoast.showToast(
-                                                    msg: "Deleting...");
-                                                _dislikeSong("${song.songId}");
-                                              },
-                                              child: const Icon(
-                                                LineIcons.heartAlt,
-                                                color: Colors.red,
-                                                size: 20.0,
+                                        Padding(
+                                          padding: const EdgeInsets.only(
+                                            top: 12.0,
+                                            bottom: 8.0,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              GestureDetector(
+                                                onTap: () {
+                                                  Fluttertoast.showToast(
+                                                      msg: "Deleting...");
+                                                  _dislikeSong(
+                                                      "${song.songId}");
+                                                },
+                                                child: const Icon(
+                                                  LineIcons.heartAlt,
+                                                  color: Colors.red,
+                                                  size: 20.0,
+                                                ),
                                               ),
-                                            ),
-                                            const SizedBox(width: 8.0),
-                                            Text(
-                                              "${song.likes}",
-                                              style: const TextStyle(
-                                                color: Colors.white60,
-                                                fontSize: 12.0,
+                                              const SizedBox(width: 8.0),
+                                              Text(
+                                                "${song.likes}",
+                                                style: const TextStyle(
+                                                  color: Colors.white60,
+                                                  fontSize: 12.0,
+                                                ),
                                               ),
-                                            ),
-                                          ],
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
-                                ),
-                                const LineIcon(
-                                  LineIcons.playCircle,
-                                  size: 30.0,
-                                  color: Colors.white60,
-                                ),
-                                const SizedBox(width: 10.0),
-                              ],
+                                  const LineIcon(
+                                    LineIcons.playCircle,
+                                    size: 30.0,
+                                    color: Colors.white60,
+                                  ),
+                                  const SizedBox(width: 10.0),
+                                ],
+                              ),
                             ),
                           ),
                         );

@@ -253,7 +253,6 @@ class _PlaySongPageState extends State<PlaySongPage> {
                 ],
               ),
             ),
-            // const Spacer(),
             Expanded(
               child: Container(
                 width: MediaQuery.of(context).size.width,

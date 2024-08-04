@@ -28,7 +28,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
   ];
 
   final List<Song> _songs = [];
-  int _currentPage = 1;
   bool _isLoading = false;
   String? _accessToken = "";
 
@@ -62,7 +61,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     });
 
     final response = await http.get(
-      Uri.parse('http://18.204.16.28:80/allsongs?page=$_currentPage'),
+      Uri.parse('http://18.204.16.28:80/allsongs?page=1'),
     );
 
     if (response.statusCode == 200) {
@@ -71,7 +70,6 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
       setState(() {
         _songs.addAll(fetchedSongs.map((data) => Song.fromJson(data)).toList());
-        _currentPage++;
         _isLoading = false;
       });
     } else {

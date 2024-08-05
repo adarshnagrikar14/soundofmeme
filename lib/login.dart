@@ -19,6 +19,7 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _nameController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
+  bool _isSignUp = true; // Control whether to show the name field
   Color blueColor = const Color.fromARGB(255, 15, 23, 42);
   Color blueColorBottom = const Color.fromARGB(255, 21, 32, 56);
 
@@ -70,6 +71,50 @@ class _SignupPageState extends State<SignupPage> {
     });
   }
 
+  Future<void> _login() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    final response = await http.post(
+      Uri.parse('http://18.204.16.28:80/login'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({
+        'email': _emailController.text,
+        'password': _passwordController.text,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      final jsonResponse = json.decode(response.body);
+      final String token = jsonResponse['access_token'];
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('access_token', token);
+      navigate();
+    } else {
+      setState(() {
+        _errorMessage = 'Failed to login. Please try again.';
+      });
+      Fluttertoast.showToast(msg: "Login Failed");
+    }
+
+    setState(() {
+      _isLoading = false;
+    });
+  }
+
+  void navigate() {
+    Fluttertoast.showToast(
+        msg: _isSignUp ? "SignUp Successful!" : "Login Successful!");
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const MainDashboard(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -90,17 +135,18 @@ class _SignupPageState extends State<SignupPage> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      const Padding(
-                        padding: EdgeInsets.only(
+                      Padding(
+                        padding: const EdgeInsets.only(
                           top: 10.0,
                           bottom: 15.0,
                         ),
                         child: Text(
-                          "Signup",
-                          style: TextStyle(
-                              fontSize: 23.0,
-                              color: Colors.white,
-                              fontWeight: FontWeight.bold),
+                          _isSignUp ? "Signup" : "Login",
+                          style: const TextStyle(
+                            fontSize: 23.0,
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                       TextField(
@@ -148,27 +194,28 @@ class _SignupPageState extends State<SignupPage> {
                         style: const TextStyle(color: Colors.white),
                       ),
                       const SizedBox(height: 16),
-                      TextField(
-                        controller: _nameController,
-                        decoration: InputDecoration(
-                          labelText: 'Name',
-                          labelStyle: const TextStyle(color: Colors.white54),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8.0),
+                      if (_isSignUp)
+                        TextField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            labelText: 'Name',
+                            labelStyle: const TextStyle(color: Colors.white54),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            focusedBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Colors.white, width: 2.0),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            enabledBorder: OutlineInputBorder(
+                              borderSide: const BorderSide(
+                                  color: Colors.white54, width: 1.0),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: Colors.white, width: 2.0),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                                color: Colors.white54, width: 1.0),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
+                          style: const TextStyle(color: Colors.white),
                         ),
-                        style: const TextStyle(color: Colors.white),
-                      ),
                       const SizedBox(height: 20),
                       if (_errorMessage != null)
                         Padding(
@@ -189,31 +236,69 @@ class _SignupPageState extends State<SignupPage> {
                                 color: Colors.white60,
                               ),
                             )
-                          : Container(
-                              width: MediaQuery.of(context).size.width * 0.9,
-                              margin: const EdgeInsets.only(
-                                top: 12.0,
-                                bottom: 12.0,
-                              ),
-                              child: ElevatedButton(
-                                onPressed: _signup,
-                                style: ElevatedButton.styleFrom(
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8.0),
+                          : Column(
+                              children: [
+                                Container(
+                                  width:
+                                      MediaQuery.of(context).size.width * 0.9,
+                                  margin: const EdgeInsets.only(
+                                    top: 12.0,
+                                    bottom: 12.0,
                                   ),
-                                  backgroundColor: blueColor,
-                                  padding: const EdgeInsets.symmetric(
-                                      vertical: 14.0),
-                                ),
-                                child: const Text(
-                                  'SignUp',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
+                                  child: ElevatedButton(
+                                    onPressed: _isSignUp ? _signup : _login,
+                                    style: ElevatedButton.styleFrom(
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                      ),
+                                      backgroundColor: blueColor,
+                                      padding: const EdgeInsets.symmetric(
+                                          vertical: 14.0),
+                                    ),
+                                    child: Text(
+                                      _isSignUp ? 'SignUp' : 'Login',
+                                      style: const TextStyle(
+                                        fontSize: 16,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
                                   ),
                                 ),
-                              ),
+                                GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      _isSignUp = !_isSignUp;
+                                    });
+                                  },
+                                  child: Container(
+                                    margin: const EdgeInsets.only(
+                                      bottom: 20.0,
+                                      top: 6.0,
+                                    ),
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.all(
+                                      12.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(
+                                        10.0,
+                                      ),
+                                      border: Border.all(color: Colors.white10),
+                                      color: Colors.white.withAlpha(5),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        _isSignUp ? "Login" : "Signup",
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
                     ],
                   ),
@@ -233,16 +318,6 @@ class _SignupPageState extends State<SignupPage> {
             ),
           )
         ],
-      ),
-    );
-  }
-
-  void navigate() {
-    Fluttertoast.showToast(msg: "Login Successful!");
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (context) => const MainDashboard(),
       ),
     );
   }

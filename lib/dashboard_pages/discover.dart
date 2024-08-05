@@ -201,7 +201,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                     gridDelegate:
                         const SliverGridDelegateWithFixedCrossAxisCount(
                       crossAxisCount: 2,
-                      childAspectRatio: 0.6,
+                      childAspectRatio: 0.62,
                       mainAxisSpacing: 10.0,
                     ),
                     delegate: SliverChildBuilderDelegate(
@@ -232,21 +232,24 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Expanded(
-                                    child: Opacity(
-                                      opacity: 0.9,
-                                      child: Image.network(
-                                        song.imageUrl,
-                                        width: double.infinity,
-                                        fit: BoxFit.fill,
-                                        color: Colors.black12,
-                                        colorBlendMode: BlendMode.multiply,
-                                      ),
+                                    child: Stack(
+                                      children: [
+                                        Opacity(
+                                          opacity: 0.9,
+                                          child: Image.network(
+                                            song.imageUrl,
+                                            width: double.infinity,
+                                            fit: BoxFit.fill,
+                                            color: Colors.black12,
+                                            colorBlendMode: BlendMode.multiply,
+                                          ),
+                                        ),
+                                      ],
                                     ),
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
                                       left: 8.0,
-                                      top: 10.0,
                                     ),
                                     child: Text(
                                       song.songName,
@@ -276,7 +279,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
                                     padding: const EdgeInsets.only(
                                       left: 8.0,
                                       top: 5.0,
-                                      bottom: 8.0,
+                                      bottom: 10.0,
                                     ),
                                     child: Row(
                                       children: [

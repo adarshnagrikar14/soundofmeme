@@ -170,131 +170,149 @@ class _CreationsPageState extends State<CreationsPage> {
                 color: Colors.white,
               ),
             ),
-            Expanded(
-              child: _isLoading
-                  ? const Center(
-                      child: CircularProgressIndicator(
-                        color: Colors.white,
+            songs.isEmpty
+                ? const Expanded(
+                    child: Center(
+                      child: Text(
+                        "No sound created yet...",
+                        style: TextStyle(color: Colors.white54),
                       ),
-                    )
-                  : Container(
-                      padding: const EdgeInsets.only(
-                        top: 12.0,
-                      ),
-                      color: blueColor,
-                      child: ListView.builder(
-                        itemCount: songs.length,
-                        itemBuilder: (context, index) {
-                          final song = songs[index];
-                          return songs.isEmpty
-                              ? const Center(
-                                  child: Text(
-                                    "No sound created yet...",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                )
-                              : GestureDetector(
-                                  onTap: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            PlaySongPage(song: song),
-                                      ),
-                                    );
-                                  },
-                                  child: Card(
-                                    margin: const EdgeInsets.symmetric(
-                                        vertical: 8.0),
-                                    color: Colors.white12,
-                                    elevation: 2.0,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(10.0),
-                                      child: Row(
-                                        children: [
-                                          ClipRRect(
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                            child: Image.network(
-                                              song.imageUrl,
-                                              width: 80.0,
-                                              height: 80.0,
-                                              fit: BoxFit.cover,
+                    ),
+                  )
+                : Expanded(
+                    child: _isLoading
+                        ? const Center(
+                            child: CircularProgressIndicator(
+                              color: Colors.white,
+                            ),
+                          )
+                        : Container(
+                            padding: const EdgeInsets.only(
+                              top: 12.0,
+                            ),
+                            color: blueColor,
+                            child: ListView.builder(
+                              itemCount: songs.length,
+                              itemBuilder: (context, index) {
+                                final song = songs[index];
+                                return songs.isEmpty
+                                    ? const Center(
+                                        child: Text(
+                                          "No sound created yet...",
+                                          style: TextStyle(color: Colors.white),
+                                        ),
+                                      )
+                                    : GestureDetector(
+                                        onTap: () {
+                                          Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  PlaySongPage(song: song),
                                             ),
-                                          ),
-                                          const SizedBox(width: 12.0),
-                                          Expanded(
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                          );
+                                        },
+                                        child: Card(
+                                          margin: const EdgeInsets.symmetric(
+                                              vertical: 8.0),
+                                          color: Colors.white12,
+                                          elevation: 2.0,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(10.0),
+                                            child: Row(
                                               children: [
-                                                Text(
-                                                  song.songName,
-                                                  style: const TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 16.0,
-                                                    fontWeight: FontWeight.bold,
+                                                ClipRRect(
+                                                  borderRadius:
+                                                      BorderRadius.circular(
+                                                          8.0),
+                                                  child: Image.network(
+                                                    song.imageUrl,
+                                                    width: 80.0,
+                                                    height: 80.0,
+                                                    fit: BoxFit.cover,
                                                   ),
                                                 ),
-                                                const SizedBox(height: 4.0),
-                                                Text(
-                                                  song.tags.isNotEmpty
-                                                      ? song.tags[0]
-                                                      : '',
-                                                  style: const TextStyle(
-                                                    color: Colors.white60,
-                                                    fontSize: 12.0,
-                                                  ),
-                                                  maxLines: 1,
-                                                  overflow:
-                                                      TextOverflow.ellipsis,
-                                                ),
-                                                Padding(
-                                                  padding:
-                                                      const EdgeInsets.only(
-                                                    top: 12.0,
-                                                    bottom: 8.0,
-                                                  ),
-                                                  child: Row(
+                                                const SizedBox(width: 12.0),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     children: [
-                                                      GestureDetector(
-                                                        onTap: () {},
-                                                        child: const Icon(
-                                                          LineIcons.heartAlt,
-                                                          color: Colors.white24,
-                                                          size: 20.0,
+                                                      Text(
+                                                        song.songName,
+                                                        style: const TextStyle(
+                                                          color: Colors.white,
+                                                          fontSize: 16.0,
+                                                          fontWeight:
+                                                              FontWeight.bold,
                                                         ),
                                                       ),
                                                       const SizedBox(
-                                                          width: 8.0),
+                                                          height: 4.0),
                                                       Text(
-                                                        "${song.likes}",
+                                                        song.tags.isNotEmpty
+                                                            ? song.tags[0]
+                                                            : '',
                                                         style: const TextStyle(
                                                           color: Colors.white60,
                                                           fontSize: 12.0,
+                                                        ),
+                                                        maxLines: 1,
+                                                        overflow: TextOverflow
+                                                            .ellipsis,
+                                                      ),
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(
+                                                          top: 12.0,
+                                                          bottom: 8.0,
+                                                        ),
+                                                        child: Row(
+                                                          children: [
+                                                            GestureDetector(
+                                                              onTap: () {},
+                                                              child: const Icon(
+                                                                LineIcons
+                                                                    .heartAlt,
+                                                                color: Colors
+                                                                    .white24,
+                                                                size: 20.0,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                width: 8.0),
+                                                            Text(
+                                                              "${song.likes}",
+                                                              style:
+                                                                  const TextStyle(
+                                                                color: Colors
+                                                                    .white60,
+                                                                fontSize: 12.0,
+                                                              ),
+                                                            ),
+                                                          ],
                                                         ),
                                                       ),
                                                     ],
                                                   ),
                                                 ),
+                                                const LineIcon(
+                                                  LineIcons.playCircle,
+                                                  size: 30.0,
+                                                  color: Colors.white60,
+                                                ),
+                                                const SizedBox(width: 10.0),
                                               ],
                                             ),
                                           ),
-                                          const LineIcon(
-                                            LineIcons.playCircle,
-                                            size: 30.0,
-                                            color: Colors.white60,
-                                          ),
-                                          const SizedBox(width: 10.0),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                );
-                        },
-                      ),
-                    ),
-            )
+                                        ),
+                                      );
+                              },
+                            ),
+                          ),
+                  )
           ],
         ),
       ),

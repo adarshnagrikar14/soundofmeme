@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:soundofmeme/splashscreen.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -193,8 +194,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+                const Spacer(),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 20.0),
+                  padding: const EdgeInsets.only(bottom: 18.0),
                   child: Text(
                     "Sounds Created: $_songCount | Sounds liked: $_likeCount",
                     style: const TextStyle(
@@ -202,8 +204,50 @@ class _ProfilePageState extends State<ProfilePage> {
                     ),
                   ),
                 ),
+                GestureDetector(
+                  onTap: () => logOut(context),
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      bottom: 20.0,
+                      left: 16,
+                      right: 16,
+                      top: 6.0,
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.all(
+                      12.0,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(
+                        10.0,
+                      ),
+                      border: Border.all(color: Colors.white10),
+                      color: Colors.white.withAlpha(5),
+                    ),
+                    child: const Center(
+                      child: Text(
+                        "Logout",
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                )
               ],
             ),
+    );
+  }
+
+  Future<void> logOut(BuildContext context) async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.clear();
+
+    Navigator.pushAndRemoveUntil(
+      // ignore: use_build_context_synchronously
+      context,
+      MaterialPageRoute(builder: (context) => const Splashscreen()),
+      (Route<dynamic> route) => false,
     );
   }
 }

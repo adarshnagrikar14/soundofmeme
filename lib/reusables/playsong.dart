@@ -1,9 +1,13 @@
 import 'dart:ui';
 
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:line_icons/line_icons.dart';
+import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
+import 'dart:convert';
 import 'package:soundofmeme/models/all_song_model.dart';
 
 class PlaySongPage extends StatefulWidget {
@@ -17,6 +21,7 @@ class PlaySongPage extends StatefulWidget {
 class _PlaySongPageState extends State<PlaySongPage> {
   late AudioPlayer _audioPlayer;
   bool _isPlaying = false;
+  String? _accessToken = "";
   Duration _currentPosition = Duration.zero;
   Duration _songDuration = Duration.zero;
   Color blueColor = const Color.fromARGB(255, 15, 23, 42);
@@ -32,6 +37,7 @@ class _PlaySongPageState extends State<PlaySongPage> {
         systemNavigationBarColor: blueColor,
       ),
     );
+    _checkToken();
     _audioPlayer = AudioPlayer();
     _audioPlayer.onDurationChanged.listen((Duration duration) {
       setState(() {
@@ -43,6 +49,19 @@ class _PlaySongPageState extends State<PlaySongPage> {
         _currentPosition = position;
       });
     });
+  }
+
+  Future<void> _checkToken() async {
+    final token = await getToken();
+    setState(() {
+      _accessToken = token.toString();
+    });
+    _updateView();
+  }
+
+  Future<String?> getToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('access_token');
   }
 
   @override
@@ -283,5 +302,27 @@ class _PlaySongPageState extends State<PlaySongPage> {
         ),
       ),
     );
+  }
+
+  void _updateView() async {
+    const String url = 'http://18.204.16.28:80/view';
+    int i = widget.song.songId;
+
+    final response = await http.post(
+      Uri.parse(url),
+      headers: {
+        'Authorization': 'Bearer $_accessToken',
+        'Content-Type': 'application/json',
+      },
+      body: jsonEncode({
+        'song_id': i,
+      }),
+    );
+
+    if (response.statusCode == 200) {
+      if (kDebugMode) {
+        print('View updated successfully.');
+      }
+    }
   }
 }

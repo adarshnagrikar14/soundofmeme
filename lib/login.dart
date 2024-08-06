@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:soundofmeme/apiconfig.dart';
 import 'package:soundofmeme/dashboard.dart';
 
 class SignupPage extends StatefulWidget {
@@ -19,7 +20,7 @@ class _SignupPageState extends State<SignupPage> {
   final TextEditingController _nameController = TextEditingController();
   bool _isLoading = false;
   String? _errorMessage;
-  bool _isSignUp = true; // Control whether to show the name field
+  bool _isSignUp = true;
   Color blueColor = const Color.fromARGB(255, 15, 23, 42);
   Color blueColorBottom = const Color.fromARGB(255, 21, 32, 56);
 
@@ -44,7 +45,7 @@ class _SignupPageState extends State<SignupPage> {
     });
 
     final response = await http.post(
-      Uri.parse('http://18.204.16.28:80/signup'),
+      Uri.parse('${ApiConfig.baseUrl}/signup'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': _emailController.text,
@@ -78,7 +79,7 @@ class _SignupPageState extends State<SignupPage> {
     });
 
     final response = await http.post(
-      Uri.parse('http://18.204.16.28:80/login'),
+      Uri.parse('${ApiConfig.baseUrl}/login'),
       headers: {'Content-Type': 'application/json'},
       body: jsonEncode({
         'email': _emailController.text,

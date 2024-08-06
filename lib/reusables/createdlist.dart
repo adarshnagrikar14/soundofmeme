@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:soundofmeme/apiconfig.dart';
 import 'package:soundofmeme/models/all_song_model.dart';
 import 'package:http/http.dart' as http;
 
@@ -25,7 +26,7 @@ class _UserSongsPageState extends State<UserSongsPage> {
 
   Future<void> fetchUserSongs() async {
     final response = await http.get(
-      Uri.parse('http://18.204.16.28:80/usersongs?page=1'),
+      Uri.parse('${ApiConfig.baseUrl}/usersongs?page=1'),
       headers: {
         'Authorization': 'Bearer ${widget.accessToken}',
       },

@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soundofmeme/apiconfig.dart';
 import 'package:soundofmeme/models/all_song_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:soundofmeme/reusables/like_animation.dart';
@@ -62,7 +63,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
     });
 
     final response = await http.get(
-      Uri.parse('http://18.204.16.28:80/allsongs?page=1'),
+      Uri.parse('${ApiConfig.baseUrl}/allsongs?page=1'),
     );
 
     if (response.statusCode == 200) {
@@ -343,7 +344,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   Future<void> _likeSong(String songId) async {
     final response = await http.post(
-      Uri.parse('http://18.204.16.28:80/like'),
+      Uri.parse('${ApiConfig.baseUrl}/like'),
       headers: {
         'Authorization': 'Bearer $_accessToken',
         'Content-Type': 'application/json',
@@ -369,7 +370,7 @@ class _DiscoverPageState extends State<DiscoverPage> {
 
   Future<void> _dislikeSong(String songId) async {
     final response = await http.post(
-      Uri.parse('http://18.204.16.28:80/dislike'),
+      Uri.parse('${ApiConfig.baseUrl}/dislike'),
       headers: {
         'Authorization': 'Bearer $_accessToken',
         'Content-Type': 'application/json',

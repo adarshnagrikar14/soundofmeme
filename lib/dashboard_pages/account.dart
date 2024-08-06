@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
+import 'package:soundofmeme/apiconfig.dart';
 import 'package:soundofmeme/splashscreen.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -80,7 +81,7 @@ class _ProfilePageState extends State<ProfilePage> {
   Future<void> _fetchUserProfile() async {
     try {
       final response = await http.get(
-        Uri.parse('http://18.204.16.28:80/user'),
+        Uri.parse('${ApiConfig.baseUrl}/user'),
         headers: {
           'Authorization': 'Bearer $_accessToken',
         },
@@ -106,7 +107,7 @@ class _ProfilePageState extends State<ProfilePage> {
 
   Future<int> fetchUserSongsCount(String accessToken) async {
     final response = await http.get(
-      Uri.parse('http://18.204.16.28:80/usersongs?page=1'),
+      Uri.parse('${ApiConfig.baseUrl}/usersongs?page=1'),
       headers: {
         'Authorization': 'Bearer $accessToken',
       },

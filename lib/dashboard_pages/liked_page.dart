@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soundofmeme/apiconfig.dart';
 import 'package:soundofmeme/models/all_song_model.dart';
 import 'package:http/http.dart' as http;
 import 'package:soundofmeme/reusables/playsong.dart';
@@ -66,7 +67,7 @@ class _LikedSongsPageState extends State<LikedSongsPage> {
 
   Future<Song> _fetchSongById(String songId) async {
     final response = await http.get(
-      Uri.parse('http://18.204.16.28:80/getsongbyid?id=$songId'),
+      Uri.parse('${ApiConfig.baseUrl}/getsongbyid?id=$songId'),
       headers: {
         'Authorization': 'Bearer $_accessToken',
       },
@@ -89,7 +90,7 @@ class _LikedSongsPageState extends State<LikedSongsPage> {
   Future<void> _dislikeSong(String songId) async {
     try {
       final response = await http.post(
-        Uri.parse('http://18.204.16.28:80/dislike'),
+        Uri.parse('${ApiConfig.baseUrl}/dislike'),
         headers: {
           'Authorization': 'Bearer $_accessToken',
           'Content-Type': 'application/json',

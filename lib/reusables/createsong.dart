@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
+import 'package:soundofmeme/apiconfig.dart';
 
 class CreateSongDialog extends StatefulWidget {
   final String accessToken;
@@ -45,7 +46,7 @@ class _CreateSongDialogState extends State<CreateSongDialog> {
     });
 
     final response = await http.post(
-      Uri.parse('http://18.204.16.28:80/create'),
+      Uri.parse('${ApiConfig.baseUrl}/create'),
       headers: {
         'Authorization': 'Bearer ${widget.accessToken}',
         'Content-Type': 'application/json',

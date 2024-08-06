@@ -7,6 +7,7 @@ import 'package:line_icons/line_icon.dart';
 import 'package:line_icons/line_icons.dart';
 import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:soundofmeme/apiconfig.dart';
 import 'package:soundofmeme/reusables/createcustomsong.dart';
 import 'package:soundofmeme/reusables/createsong.dart';
 import 'package:soundofmeme/reusables/playsong.dart';
@@ -67,7 +68,7 @@ class _CreationsPageState extends State<CreationsPage> {
     });
 
     final response = await http.get(
-      Uri.parse('http://18.204.16.28:80/usersongs?page=1'),
+      Uri.parse('${ApiConfig.baseUrl}/usersongs?page=1'),
       headers: {
         'Authorization': 'Bearer $_accessToken',
       },
